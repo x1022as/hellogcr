@@ -22,6 +22,7 @@ FROM golang
 RUN apt-get update
 RUN apt install --yes sysbench
 ADD iozone /usr/bin/iozone
+ADD getpid /usr/bin/getpid
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /go/src/github.com/knative/docs/helloworld/helloworld /helloworld

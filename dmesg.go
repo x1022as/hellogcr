@@ -32,7 +32,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command("bash", nss...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Fprintf(w, "%s failed with %s\n", string(body), err)
+		fmt.Fprintf(w, "%s failed with %s\n%s\n", string(body), string(out), err)
 		return
 	}
 
