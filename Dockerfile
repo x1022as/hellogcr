@@ -12,6 +12,7 @@ COPY . .
 # either manually or with a tool like "godep".)
 RUN CGO_ENABLED=0 GOOS=linux go build -v -o helloworld dmesg.go
 RUN CGO_ENABLED=0 GOOS=linux go build -v -o tcp-rdtsc tcp-rdtsc.go
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o tcp-load tcp-load.go
 
 # Use a Docker multi-stage build to create a lean production image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
@@ -28,6 +29,7 @@ ADD getpid /usr/bin/getpid
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /go/src/github.com/knative/docs/helloworld/helloworld /helloworld
 COPY --from=builder /go/src/github.com/knative/docs/helloworld/tcp-rdtsc /usr/bin/tcp-rdtsc
+COPY --from=builder /go/src/github.com/knative/docs/helloworld/tcp-load /usr/bin/tcp-load
 
 # Run the web service on container startup.
 CMD ["/helloworld"]
