@@ -31,5 +31,7 @@ COPY --from=builder /go/src/github.com/knative/docs/helloworld/helloworld /hello
 COPY --from=builder /go/src/github.com/knative/docs/helloworld/tcp-rdtsc /usr/bin/tcp-rdtsc
 COPY --from=builder /go/src/github.com/knative/docs/helloworld/tcp-load /usr/bin/tcp-load
 
+RUN dd if=/dev/zero of=/big-file bs=1M count=2048
+
 # Run the web service on container startup.
 CMD ["/helloworld"]
