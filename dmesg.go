@@ -11,6 +11,7 @@ import (
 )
 
 var logFile *os.File
+var request_sleep bool
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	log.Print("Hello world received a request.")
@@ -19,6 +20,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	target := os.Getenv("TARGET")
 	if target == "" {
 		target = "World"
+	}
+
+	if request_sleep {
+		time.Sleep(5 * time.Second)
 	}
 
 	cLen := r.ContentLength
@@ -86,6 +91,12 @@ func main() {
 	ds := os.Getenv("DEBUG_SLEEP")
 	if ds == "1" {
 		time.Sleep(10 * time.Second)
+	}
+
+	request_sleep = false
+	rs := os.Getenv("REQUEST_SLEEP")
+	if rs == "1" {
+		request_sleep = true
 	}
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
