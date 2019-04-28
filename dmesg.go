@@ -7,10 +7,15 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
+
+var logFile *os.File
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	log.Print("Hello world received a request.")
+	n := time.Now()
+	fmt.Fprintf(logFile, "new request at: %s\n", n.Format(time.RFC3339Nano))
 	target := os.Getenv("TARGET")
 	if target == "" {
 		target = "World"
@@ -66,11 +71,21 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.Print("Hello world sample started.")
 
+	logFile, _ = os.OpenFile("/logfile", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	defer logFile.Close()
+	n := time.Now()
+	fmt.Fprintf(logFile, "service started at: %s\n", n.Format(time.RFC3339Nano))
+
 	http.HandleFunc("/", handler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
+	}
+
+	ds := os.Getenv("DEBUG_SLEEP")
+	if ds == "1" {
+		time.Sleep(10 * time.Second)
 	}
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
